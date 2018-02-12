@@ -3,4 +3,4 @@ var board = new five.Board({
     port: "COM9"
 });
 
-module.exports = {board, five}
+module.exports = { board, five }

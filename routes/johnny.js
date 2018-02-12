@@ -7,4 +7,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/blink', johnnyCtrl.blink)
+
+router.get('/off', johnnyCtrl.off)
+
 module.exports = router
