@@ -1,24 +1,27 @@
-var { board, five } = require('../helpers/board')
-var { strip } = require('../index')
-var led = new five.Led(13);
-var fps = 80;
+var five = require("johnny-five");
+var pixel = require("node-pixel");
 
+var board = new five.Board({
+    port: "COM9"
+});
+var strip = null;
 
-class johnnyCtrl {
-    static blink(req,res) {
-        
-        // led.on();
-        led.blink(500);
-        // strip.show();
-        res.send('Led blink')
-    }
+var fps = 90;
 
-    static off(req,res) {
-        led.stop().off()
-        res.send('Led off')
-    }
+board.on("ready", function () {
+    console.log("Board is ready")
+    // var led = new five.Led(11);
+    // led.blink(500);
+    strip = new pixel.Strip({
+        board: this,
+        controller: "FIRMATA",
+        strips: [{ pin: 11, length: 58 },], // this is preferred form for definition
+        gamma: 2.8, // set to a gamma that works nicely for WS2812
+    });
 
-    static showStrip(req,res) {
+    strip.on("ready", function () {
+        console.log("Strip is ready")
+        // do stuff with the strip here.
         var colors = ["red", "green", "blue", "yellow", "cyan", "magenta", "white"];
         var current_colors = [0, 1, 2, 3, 4];
         var current_pos = [0, 1, 2, 3, 4];
@@ -36,13 +39,5 @@ class johnnyCtrl {
 
             strip.show();
         }, 1000 / fps);
-        res.send('Show is on')
-    }
-
-    static stopStrip(req,res) {
-        strip.off();
-        res.send('Strip has been turned off')
-    }
-}
-
-module.exports = johnnyCtrl
+    });
+});
